@@ -1,0 +1,28 @@
+---
+- name: Configure Single Area OSPF
+  hosts: routers
+  connection: network_cli
+  become_method: enable
+
+  tasks:
+    - name: Configure OSPF for R1
+      when: ansible_host == "10.28.0.1"
+      ios_config:
+        parents: router ospf 10
+        lines:
+          - network 192.168.100.0 0.0.0.255 area 0
+          - network 10.28.0.0 0.0.0.3 area 0
+          - passive-interface FastEthernet0/0
+    - name: Configure OSPF for R2
+      when: ansible_host == "10.28.0.2"
+      ios_config:
+        parents: router ospf 10
+        lines:
+          - network 10.28.0.0 0.0.0.3 area 0
+          - network 10.29.0.0 0.0.0.3 area 0
+    - name: Configure OSPF for R3
+      when: ansible_host == "10.1.1.2"
+      ios_config:
+        parents: router ospf 10
+        lines:
+          - network 10.29.0.0 0.0.0.3 area 0

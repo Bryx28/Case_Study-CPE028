@@ -1,0 +1,62 @@
+R1:
+
+en
+conf t
+hostname R1
+username cisco password cisco123
+enable secret class
+service password-encryption
+banner motd "Unauthorized Access is Prohibited"
+ip domain-name www.abc.com
+crypto key gen rsa
+1024
+ip ssh ver 2
+line con 0
+password cisco
+login local
+line vty 0 15
+login local
+transport input ssh
+do copy r s
+
+R2:
+
+en
+conf t
+hostname R2
+username cisco password cisco123
+enable secret class
+service password-encryption
+banner motd "Unauthorized Access is Prohibited"
+ip domain-name www.abc.com
+crypto key gen rsa
+1024
+ip ssh ver 2
+line con 0
+password cisco
+login local
+line vty 0 15
+login local
+transport input ssh
+do copy r s
+
+R3:
+
+en
+conf t
+hostname R3
+username cisco password cisco123
+enable secret class
+service password-encryption
+banner motd "Unauthorized Access is Prohibited"
+ip domain-name www.abc.com
+crypto key gen rsa
+1024
+ip ssh ver 2
+line con 0
+password cisco
+login local
+line vty 0 15
+login local
+transport input ssh
+do copy r s

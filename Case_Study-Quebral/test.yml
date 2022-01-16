@@ -1,0 +1,11 @@
+---
+- name: Show of IP Interfaces
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: Display of IP Interface Brief
+      ios_command:
+        commands:
+          - show ip interface brief
+      register: config

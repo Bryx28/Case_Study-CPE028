@@ -1,0 +1,95 @@
+---
+- hosts: routers
+  gather_facts: false
+  connection: network_cli
+  become_method: enable
+
+#OSPF
+  tasks:
+    - name: OSPF configuration for R1
+      when: ansible_host == "10.28.0.1"
+      ios_config:
+        parents: router ospf 10
+        lines:
+          - router-id 1.1.1.1
+          - network 192.168.100.0 0.0.0.255 area 0
+          - network 10.28.0.0 0.0.0.3 area 0
+          - network 10.30.0.0 0.0.0.3 area 0
+          - passive-interface FastEthernet0/0
+
+    - name: OSPF configuration for R2
+      when: ansible_host == "10.28.0.2"
+      ios_config:
+        parents: router ospf 10
+        lines:
+          - router-id 2.2.2.2
+          - network 10.28.0.0 0.0.0.3 area 0
+          - network 10.29.0.0 0.0.0.3 area 0
+          - default-information originate
+
+    - name: OSPF configuration for R3
+      when: ansible_host == "10.29.0.1"
+      ios_config:
+        parents: router ospf 10
+        lines:
+          - router-id 3.3.3.3
+          - network 172.16.1.0 0.0.0.255 area 0
+          - network 152.78.2.0 0.0.0.255 area 0
+          - network 10.29.0.0 0.0.0.3 area 0
+          - network 10.30.0.0 0.0.0.3 area 0
+          - passive-interface FastEthernet0/0
+          - passive-interface FastEthernet0/1
+#AAA
+    - name: Enable AAA and configure AAA login authentication
+      ios_config:
+        commands:
+          - aaa new-model
+          - aaa authentication login default local
+
+    - name: Configure line console to use the authentication method
+      ios_config:
+        commands:
+          - login authentication default
+        parents: line console 0
+
+    - name: Enable and configure AAA authentication method for vty lines
+      ios_config:
+        commands:
+          - aaa authentication login SSH-LOGIN local
+
+    - name: Configure vty lines to use the authentication method
+      ios_config:
+        commands:
+          - login authentication SSH-LOGIN
+        parents: line vty 0 4
+
+#ACL
+    - name: ACL Configuration for R1 (Deny of Guest Network to DEVASC)
+      when: ansible_host == "10.28.0.1"
+      ios_config:
+        parents: ip access-list standard DENY_GUEST_NETWORK_TO_DEVASC
+        lines:
+          - deny 152.78.2.0 0.0.0.255
+          - permit any
+    
+    - name: ACL Access Group to Interface F0/0
+      when: ansible_host == "10.28.0.1"
+      ios_config:
+        parents: interface FastEthernet0/0
+        lines:
+          - ip access-group DENY_GUEST_NETWORK_TO_DEVASC out
+
+    - name: ACL configuration for R3 (Deny Guest Network to Admin)
+      when: ansible_host == "10.29.0.1"
+      ios_config:
+        parents: ip access-list standard DENY_GUEST_NETWORK_TO_ADMIN
+        lines:
+          - deny 152.78.2.0 0.0.0.255
+          - permit any
+    
+    - name: ACL Access Group to Interface F0/1
+      when: ansible_host == "10.29.0.1"
+      ios_config:
+        parents: interface FastEthernet0/1
+        lines:
+          - ip access-group DENY_GUEST_NETWORK_TO_ADMIN out

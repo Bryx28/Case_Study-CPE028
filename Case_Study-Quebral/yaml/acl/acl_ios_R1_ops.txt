@@ -1,0 +1,56 @@
+{
+  "_exclude": [],
+  "attributes": null,
+  "commands": null,
+  "connections": null,
+  "context_manager": {},
+  "info": {
+    "acls": {
+      "DENY_GUEST_NETWORK_TO_DEVASC": {
+        "aces": {
+          "10": {
+            "actions": {
+              "forwarding": "deny"
+            },
+            "matches": {
+              "l3": {
+                "ipv4": {
+                  "protocol": "ipv4",
+                  "source_ipv4_network": {
+                    "152.78.2.0 0.0.0.255": {
+                      "source_ipv4_network": "152.78.2.0 0.0.0.255"
+                    }
+                  }
+                }
+              }
+            },
+            "name": "10"
+          },
+          "20": {
+            "actions": {
+              "forwarding": "permit"
+            },
+            "matches": {
+              "l3": {
+                "ipv4": {
+                  "protocol": "ipv4",
+                  "source_ipv4_network": {
+                    "any": {
+                      "source_ipv4_network": "any"
+                    }
+                  }
+                }
+              }
+            },
+            "name": "20",
+            "statistics": {
+              "matched_packets": 4358
+            }
+          }
+        },
+        "name": "DENY_GUEST_NETWORK_TO_DEVASC",
+        "type": "ipv4-acl-type"
+      }
+    }
+  }
+}

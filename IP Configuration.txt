@@ -1,0 +1,41 @@
+R1:
+int f0/0
+ip address 192.168.100.1 255.255.255.0
+no shut
+int s0/0
+ip address 10.28.0.1 255.255.255.252
+no shut
+int s0/2
+ip address 10.30.0.1 255.255.255.252
+no shut
+ip route 0.0.0.0 0.0.0.0 10.28.0.2
+ip route 0.0.0.0 0.0.0.0 10.30.0.2
+do copy run start
+
+R2:
+int s0/0
+ip address 10.28.0.2 255.255.255.252
+no shut
+int s0/1
+ip address 10.29.0.2 255.255.255.252
+no shut
+ip route 0.0.0.0 0.0.0.0 10.28.0.1
+ip route 0.0.0.0 0.0.0.0 10.29.0.1
+do copy run start
+
+R3:
+int s0/1
+ip address 10.29.0.1 255.255.255.252
+no shut
+int s0/2
+ip address 10.30.0.2 255.255.255.252
+no shut
+int f0/0
+ip address 152.78.2.1 255.255.255.0
+no shut
+int f0/1
+ip address 172.16.1.1 255.255.255.0
+no shut
+ip route 0.0.0.0 0.0.0.0 10.29.0.2
+ip route 0.0.0.0 0.0.0.0 10.30.0.1
+do copy run start
